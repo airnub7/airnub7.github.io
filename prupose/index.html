@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine? 💘</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Arial Rounded MT Bold', 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff8fab 25%, #ffb3c6 50%, #ff8fab 75%, #ff6b9d 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 20px;
+            position: relative;
+            cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path fill="%23ff2e63" d="M16 3c-4.418 0-8 3.582-8 8 0 4.418 3.582 8 8 8s8-3.582 8-8c0-4.418-3.582-8-8-8zm0 14c-3.314 0-6-2.686-6-6s2.686-6 6-6 6 2.686 6 6-2.686 6-6 6z"/><path fill="%23ff2e63" d="M16 10c-1.105 0-2 .895-2 2s.895 2 2 2 2-.895 2-2-.895-2-2-2z"/></svg>'), auto;
+        }
+        
+        /* Animated background elements */
+        .bg-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .bg-heart {
+            position: absolute;
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.15);
+            animation: float 15s linear infinite;
+        }
+        
+        .container {
+            text-align: center;
+            max-width: 900px;
+            width: 100%;
+            padding: 40px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 245, 0.98));
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(199, 0, 57, 0.25),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.6),
+                        0 0 30px rgba(255, 105, 180, 0.3);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            cursor: default;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            background: linear-gradient(45deg, #ff6b9d, #ff8fab, #ffb3c6, #ff8fab, #ff6b9d);
+            z-index: -1;
+            border-radius: 40px;
+            opacity: 0.1;
+        }
+        
+        h1 {
+            color: #ff2e63;
+            font-size: 4rem;
+            margin-bottom: 30px;
+            text-shadow: 3px 3px 0 rgba(255, 182, 193, 0.4);
+            position: relative;
+            z-index: 2;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: linear-gradient(45deg, #ff2e63, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+        
+        .question-container {
+            position: relative;
+            margin-bottom: 60px;
+            padding: 25px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 10px 20px rgba(255, 105, 180, 0.15);
+        }
+        
+        .question {
+            font-size: 3.2rem;
+            color: #d1005e;
+            margin-bottom: 10px;
+            font-weight: bold;
+            position: relative;
+            animation: pulse 2s infinite;
+            font-family: 'Dancing Script', cursive;
+        }
+        
+        .sub-question {
+            font-size: 1.5rem;
+            color: #ff6b9d;
+            font-style: italic;
+            opacity: 0.8;
+        }
+        
+        .buttons-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 3;
+            min-height: 350px;
+            width: 100%;
+        }
+        
+        .button-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            min-height: 110px;
+        }
+        
+        .valentine-button {
+            padding: 22px 55px;
+            font-size: 2rem;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: bold;
+            position: relative;
+            min-width: 250px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            overflow: hidden;
+        }
+        
+        .valentine-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+            border-radius: 60px;
+        }
+        
+        #yes-btn {
+            background: linear-gradient(145deg, #4CAF50, #2E7D32);
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.4),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            order: 1;
+        }
+        
+        #yes-btn:hover {
+            background: linear-gradient(145deg, #45a049, #1B5E20);
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(76, 175, 80, 0.5),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+        
+        #yes-btn:active {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+        }
+        
+        #no-btn {
+            background: linear-gradient(145deg, #ff4757, #ff3838);
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 20px rgba(255, 71, 87, 0.4),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            order: 3;
+            position: relative;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        /* Animation for the No button when hovered */
+        .giggle {
+            animation: giggle 0.5s infinite alternate;
+        }
+        
+        .running {
+            animation: runAway 0.8s forwards;
+        }
+        
+        .returning {
+            animation: returnToPlace 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+        }
+        
+        .mock-message {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.95);
+            color: #ff4757;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 20;
+            pointer-events: none;
+            opacity: 0;
+            animation: fadeMock 2s ease forwards;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+        
+        .message-container {
+            display: none;
+            margin-top: 40px;
+            padding: 40px;
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(255, 240, 245, 0.98));
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(255, 105, 180, 0.2);
+            animation: fadeInUp 1.2s ease forwards;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .message-container::before {
+            content: '💖';
+            position: absolute;
+            font-size: 300px;
+            opacity: 0.05;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+        
+        .message-title {
+            font-size: 3rem;
+            color: #ff2e63;
+            margin-bottom: 25px;
+            font-weight: 800;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 0 rgba(255, 182, 193, 0.4);
+        }
+        
+        .message-quote {
+            font-size: 2rem;
+            color: #555;
+            font-style: italic;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+            font-family: 'Dancing Script', cursive;
+        }
+        
+        .heart-explosion {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 40px 0;
+            height: 200px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .heart {
+            position: relative;
+            width: 120px;
+            height: 108px;
+            animation: heartbeat 1.2s infinite;
+            margin: 0 20px;
+            filter: drop-shadow(0 5px 10px rgba(255, 0, 85, 0.3));
+        }
+        
+        .heart:before,
+        .heart:after {
+            position: absolute;
+            content: "";
+            left: 60px;
+            top: 0;
+            width: 60px;
+            height: 96px;
+            background: linear-gradient(#ff2e63, #ff6b9d);
+            border-radius: 60px 60px 0 0;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
+        }
+        
+        .heart:after {
+            left: 0;
+            transform: rotate(45deg);
+            transform-origin: 100% 100%;
+        }
+        
+        .sparkle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.8);
+            animation: sparkle 1.5s infinite;
+        }
+        
+        /* Animations */
+        @keyframes giggle {
+            0% { transform: translateX(0) rotate(0deg) scale(1); }
+            25% { transform: translateX(-15px) rotate(-8deg) scale(1.05); }
+            50% { transform: translateX(15px) rotate(8deg) scale(1.1); }
+            75% { transform: translateX(-10px) rotate(-5deg) scale(1.05); }
+            100% { transform: translateX(10px) rotate(5deg) scale(1.1); }
+        }
+        
+        @keyframes runAway {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(var(--run-x, 300px)) translateY(var(--run-y, 150px)); }
+        }
+        
+        @keyframes returnToPlace {
+            0% { transform: translateX(var(--run-x, 300px)) translateY(var(--run-y, 150px)); }
+            100% { transform: translateX(0) translateY(0); }
+        }
+        
+        @keyframes fadeMock {
+            0% { opacity: 0; transform: translateY(0); }
+            20% { opacity: 1; transform: translateY(-30px); }
+            80% { opacity: 1; transform: translateY(-50px); }
+            100% { opacity: 0; transform: translateY(-70px); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.15); }
+            40% { transform: scale(1); }
+            60% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); }
+            100% { transform: translateY(-100px) rotate(360deg); }
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes titleGlow {
+            0% { filter: drop-shadow(0 0 5px rgba(255, 46, 99, 0.5)); }
+            100% { filter: drop-shadow(0 0 20px rgba(255, 46, 99, 0.8)); }
+        }
+        
+        /* Arrow between buttons */
+        .button-arrow {
+            font-size: 3rem;
+            color: #ff6b9d;
+            margin: 5px 0;
+            animation: arrowBounce 1.5s infinite;
+            order: 2;
+        }
+        
+        @keyframes arrowBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+        
+        /* NO button detection zone */
+        .no-button-zone {
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            background: rgba(255, 71, 87, 0.1);
+            z-index: 5;
+            pointer-events: all;
+            cursor: crosshair;
+            transition: transform 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            order: 3;
+        }
+        
+        .zone-label {
+            position: absolute;
+            top: -40px;
+            color: #ff4757;
+            font-weight: bold;
+            font-size: 1.2rem;
+            white-space: nowrap;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 15px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+            
+            .question {
+                font-size: 2.3rem;
+            }
+            
+            .valentine-button {
+                width: 90%;
+                font-size: 1.8rem;
+                padding: 20px 40px;
+            }
+            
+            .message-title {
+                font-size: 2.2rem;
+            }
+            
+            .message-quote {
+                font-size: 1.6rem;
+            }
+            
+            .button-arrow {
+                font-size: 2.5rem;
+            }
+            
+            .no-button-zone {
+                width: 280px;
+                height: 280px;
+            }
+        }
+        
+        footer {
+            margin-top: 40px;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            font-size: 1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .no-attempts {
+            color: #ff4757;
+            font-size: 1.2rem;
+            margin-top: 15px;
+            font-weight: bold;
+            min-height: 30px;
+            order: 4;
+            margin-top: 10px;
+        }
+        
+        .instructions {
+            color: #ff6b9d;
+            font-size: 1.1rem;
+            margin-top: 20px;
+            font-style: italic;
+            max-width: 500px;
+            line-height: 1.5;
+            order: 5;
+        }
+        
+        .trap-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            text-align: center;
+            display: none;
+            animation: fadeInUp 0.5s ease;
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .trap-message h3 {
+            color: #ff2e63;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+        
+        .trap-message p {
+            color: #555;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            line-height: 1.5;
+        }
+        
+        .close-trap {
+            background: #ff2e63;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .close-trap:hover {
+            background: #d1005e;
+            transform: scale(1.05);
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="bg-hearts" id="bgHearts"></div>
+    
+    <!-- Trap Message -->
+    <div class="trap-message" id="trapMessage">
+        <h3>Nice Try! 😜</h3>
+        <p>You can't click the "NO" button! It's protected by a force field of love! 💘</p>
+        <p>Maybe you should try the "YES" button instead? It's much more welcoming! 😊</p>
+        <button class="close-trap" id="closeTrap">Got it!</button>
+    </div>
+    
+    <div class="container">
+        <h1>Happy Valentine's Day! 💝</h1>
+        
+        <div class="question-container">
+            <div class="question">Will you be my Valentine?</div>
+            <div class="sub-question">Your answer will decide my fate...</div>
+        </div>
+        
+        <div class="buttons-container">
+            <div class="button-wrapper">
+                <button id="yes-btn" class="valentine-button">YES! I'd Love To! 💖</button>
+            </div>
+            
+            <div class="button-arrow">↓</div>
+            
+            <!-- NO Button Zone - This is what users interact with -->
+            <div class="no-button-zone" id="noButtonZone">
+                <div class="zone-label">NO Button Zone 🚫</div>
+                <button id="no-btn" class="valentine-button">NO, I'm Sorry 😢</button>
+            </div>
+            
+            <div class="no-attempts" id="noAttempts"></div>
+            
+            <div class="instructions" id="instructions">
+                The "NO" button is protected by a love force field! You can't tap it no matter how hard you try! 😉
+            </div>
+        </div>
+        
+        <div id="message-container" class="message-container">
+            <div class="message-title">You've Made My Heart Sing! 🎶💕</div>
+            <div class="message-quote">
+                "In all the world, there is no heart for me like yours.<br>
+                In all the world, there is no love for you like mine.<br>
+                I've waited my whole life to find you, my darling.<br>
+                Today and every day, I choose you."
+            </div>
+            <div class="heart-explosion">
+                <div class="heart"></div>
+                <div class="heart"></div>
+                <div class="heart"></div>
+            </div>
+            <div class="sparkle" style="top: 20%; left: 15%;"></div>
+            <div class="sparkle" style="top: 10%; right: 20%; animation-delay: 0.5s;"></div>
+            <div class="sparkle" style="bottom: 30%; left: 25%; animation-delay: 1s;"></div>
+        </div>
+    </div>
+    
+    <footer>
+        Made with infinite love ❤️ for the most special person
+    </footer>
+
+    <script>
+        // Get DOM elements
+        const yesBtn = document.getElementById('yes-btn');
+        const noBtn = document.getElementById('no-btn');
+        const noButtonZone = document.getElementById('noButtonZone');
+        const messageContainer = document.getElementById('message-container');
+        const question = document.querySelector('.question');
+        const buttonsContainer = document.querySelector('.buttons-container');
+        const container = document.querySelector('.container');
+        const bgHearts = document.getElementById('bgHearts');
+        const noAttempts = document.getElementById('noAttempts');
+        const instructions = document.getElementById('instructions');
+        const trapMessage = document.getElementById('trapMessage');
+        const closeTrap = document.getElementById('closeTrap');
+        
+        // Variables for tracking
+        let isRunning = false;
+        let isReturning = false;
+        let noButtonClicks = 0;
+        let originalPosition = { x: 0, y: 0 };
+        let noButtonRect;
+        let mousePosition = { x: 0, y: 0 };
+        let lastMoveTime = 0;
+        
+        // Mocking messages array
+        const mockMessages = [
+            "Nice try! 😜",
+            "Too slow! 🏃‍♂️",
+            "You can't catch me! 🎯",
+            "Missed again! 😏",
+            "I'm too quick for you! ⚡",
+            "Almost! But not quite! 😄",
+            "Try harder! 😂",
+            "Nope, not happening! 🙅‍♂️",
+            "The force field protects me! 🛡️",
+            "Are you sure about NO? 🤔",
+            "Maybe try YES instead? 😉",
+            "The YES button is much friendlier! 😊",
+            "You'll never click NO! 😎",
+            "Protected by love! 💘",
+            "This button is untappable! 🚫"
+        ];
+        
+        // Create background hearts
+        function createBackgroundHearts() {
+            for (let i = 0; i < 25; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('bg-heart');
+                heart.innerHTML = '💗';
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.top = `${Math.random() * 100}%`;
+                heart.style.fontSize = `${Math.random() * 30 + 20}px`;
+                heart.style.animationDuration = `${Math.random() * 20 + 10}s`;
+                heart.style.animationDelay = `${Math.random() * 5}s`;
+                heart.style.opacity = `${Math.random() * 0.2 + 0.05}`;
+                bgHearts.appendChild(heart);
+            }
+        }
+        
+        // Track mouse position for prediction
+        function trackMousePosition(event) {
+            mousePosition.x = event.clientX;
+            mousePosition.y = event.clientY;
+        }
+        
+        // Function to show a mocking message
+        function showMockMessage(message, x, y) {
+            const mockMsg = document.createElement('div');
+            mockMsg.classList.add('mock-message');
+            mockMsg.textContent = message;
+            mockMsg.style.left = `${x}px`;
+            mockMsg.style.top = `${y}px`;
+            document.body.appendChild(mockMsg);
+            
+            // Remove message after animation completes
+            setTimeout(() => {
+                mockMsg.remove();
+            }, 2000);
+        }
+        
+        // Show trap message
+        function showTrapMessage() {
+            trapMessage.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Function to move the "No" button away from cursor
+        function moveButtonAway(event) {
+            if (isRunning || isReturning) return;
+            
+            noButtonRect = noBtn.getBoundingClientRect();
+            const buttonCenterX = noButtonRect.left + noButtonRect.width / 2;
+            const buttonCenterY = noButtonRect.top + noButtonRect.height / 2;
+            
+            const mouseX = event.clientX || event.touches[0].clientX;
+            const mouseY = event.clientY || event.touches[0].clientY;
+            
+            const distanceX = mouseX - buttonCenterX;
+            const distanceY = mouseY - buttonCenterY;
+            
+            const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+            const now = Date.now();
+            
+            // If mouse is close to the button OR if trying to click
+            if (distance < 200 || (event.type === 'click' && distance < 300)) {
+                // Prevent any click action
+                event.preventDefault();
+                event.stopPropagation();
+                
+                // Show trap message on serious attempt
+                if (event.type === 'click' || distance < 50) {
+                    showTrapMessage();
+                }
+                
+                isRunning = true;
+                noButtonClicks++;
+                
+                // Update attempts counter
+                noAttempts.textContent = `Failed attempts to tap "NO": ${noButtonClicks}`;
+                instructions.textContent = `The "NO" button has evaded you ${noButtonClicks} time${noButtonClicks !== 1 ? 's' : ''}! Try the "YES" button instead!`;
+                
+                // Add giggle animation
+                noBtn.classList.add('giggle');
+                
+                // Calculate a new position for the button
+                const containerRect = container.getBoundingClientRect();
+                const maxX = containerRect.width - noBtn.offsetWidth - 40;
+                const maxY = containerRect.height - noBtn.offsetHeight - 40;
+                
+                // Generate random position away from mouse
+                let randomX, randomY;
+                do {
+                    randomX = Math.max(20, Math.min(Math.random() * maxX, maxX));
+                    randomY = Math.max(20, Math.min(Math.random() * maxY, maxY));
+                } while (Math.abs(randomX - mouseX) < 150 && Math.abs(randomY - mouseY) < 150);
+                
+                // Set CSS custom properties for the run animation
+                const runX = randomX - originalPosition.x;
+                const runY = randomY - originalPosition.y;
+                noBtn.style.setProperty('--run-x', `${runX}px`);
+                noBtn.style.setProperty('--run-y', `${runY}px`);
+                
+                // Add running animation
+                noBtn.classList.add('running');
+                
+                // Show mocking message
+                const mockIndex = Math.min(noButtonClicks - 1, mockMessages.length - 1);
+                showMockMessage(mockMessages[mockIndex], event.clientX || event.touches[0].clientX, (event.clientY || event.touches[0].clientY) - 50);
+                
+                // After running, return to original position
+                setTimeout(() => {
+                    noBtn.classList.remove('running');
+                    noBtn.classList.remove('giggle');
+                    isRunning = false;
+                    isReturning = true;
+                    
+                    // Return to original position
+                    noBtn.classList.add('returning');
+                    
+                    setTimeout(() => {
+                        noBtn.classList.remove('returning');
+                        isReturning = false;
+                    }, 1000);
+                    
+                }, 800);
+            }
+        }
+        
+        // Prevent any interaction with the NO button
+        function preventNoButtonInteraction(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            moveButtonAway(event);
+            return false;
+        }
+        
+        // Function to handle when "Yes" button is clicked
+        function handleYesClick() {
+            // Create heart explosion effect
+            for (let i = 0; i < 50; i++) {
+                createHeartExplosion();
+            }
+            
+            // Show the message with delay for dramatic effect
+            setTimeout(() => {
+                messageContainer.style.display = 'block';
+                
+                // Update the question text
+                question.textContent = "You said YES! 💖🎉";
+                question.style.animation = 'none';
+                
+                // Hide the buttons and instructions
+                document.querySelector('.buttons-container').style.display = 'none';
+                
+                // Play a sound (if allowed by browser)
+                playCelebrationSound();
+                
+            }, 800);
+        }
+        
+        // Function to create heart explosion
+        function createHeartExplosion() {
+            const heart = document.createElement('div');
+            heart.innerHTML = '💖';
+            heart.style.position = 'fixed';
+            heart.style.fontSize = `${Math.random() * 30 + 20}px`;
+            heart.style.left = `${Math.random() * 100}vw`;
+            heart.style.top = `${Math.random() * 100}vh`;
+            heart.style.opacity = '0';
+            heart.style.zIndex = '1000';
+            heart.style.pointerEvents = 'none';
+            document.body.appendChild(heart);
+            
+            // Animate heart explosion
+            const animation = heart.animate([
+                { opacity: 0, transform: 'scale(0) translate(0, 0)' },
+                { opacity: 1, transform: `scale(1) translate(${Math.random() * 100 - 50}px, ${Math.random() * 100 - 50}px)` },
+                { opacity: 0, transform: `scale(0.5) translate(${Math.random() * 200 - 100}px, ${Math.random() * 200 - 100}px)` }
+            ], {
+                duration: 1500,
+                easing: 'cubic-bezier(0.215, 0.61, 0.355, 1)'
+            });
+            
+            // Remove heart after animation
+            animation.onfinish = () => heart.remove();
+        }
+        
+        // Function to play celebration sound
+        function playCelebrationSound() {
+            // Create audio context for simple beep sounds
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                // Play a happy melody
+                playNote(audioContext, 523.25, 0); // C5
+                playNote(audioContext, 659.25, 200); // E5
+                playNote(audioContext, 783.99, 400); // G5
+                playNote(audioContext, 1046.50, 600); // C6
+            } catch (e) {
+                console.log("Audio not supported");
+            }
+        }
+        
+        function playNote(audioContext, frequency, startTime) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = frequency;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime + startTime / 1000);
+            oscillator.stop(audioContext.currentTime + startTime / 1000 + 0.5);
+        }
+        
+        // Initialize page
+        function init() {
+            // Store original position of the No button
+            originalPosition.x = noBtn.offsetLeft;
+            originalPosition.y = noBtn.offsetTop;
+            
+            // Make NO button completely untappable
+            noBtn.style.pointerEvents = 'none';
+            noBtn.style.cursor = 'not-allowed';
+            
+            // Create background hearts
+            createBackgroundHearts();
+            
+            // Add sparkles to the container
+            for (let i = 0; i < 8; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.classList.add('sparkle');
+                sparkle.style.left = `${Math.random() * 100}%`;
+                sparkle.style.top = `${Math.random() * 100}%`;
+                sparkle.style.animationDelay = `${Math.random() * 2}s`;
+                container.appendChild(sparkle);
+            }
+        }
+        
+        // Event listeners
+        // Track mouse movement on the entire document
+        document.addEventListener('mousemove', trackMousePosition);
+        
+        // NO button zone interactions
+        noButtonZone.addEventListener('mouseover', moveButtonAway);
+        noButtonZone.addEventListener('mousemove', moveButtonAway);
+        noButtonZone.addEventListener('click', preventNoButtonInteraction);
+        noButtonZone.addEventListener('touchstart', preventNoButtonInteraction);
+        noButtonZone.addEventListener('touchmove', preventNoButtonInteraction);
+        noButtonZone.addEventListener('touchend', preventNoButtonInteraction);
+        
+        // Additional protection: prevent any clicks on the NO button itself
+        noBtn.addEventListener('click', preventNoButtonInteraction);
+        noBtn.addEventListener('mousedown', preventNoButtonInteraction);
+        noBtn.addEventListener('touchstart', preventNoButtonInteraction);
+        
+        // YES button interaction
+        yesBtn.addEventListener('click', handleYesClick);
+        
+        // Trap message close button
+        closeTrap.addEventListener('click', function() {
+            trapMessage.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+        
+        // Close trap message if clicking outside
+        trapMessage.addEventListener('click', function(event) {
+            if (event.target === trapMessage) {
+                trapMessage.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Initialize the page
+        init();
+    </script>
+</body>
+</html>
